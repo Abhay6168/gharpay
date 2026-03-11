@@ -1,6 +1,6 @@
 // Modern Premium Dashboard with SaaS-style UI
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { dashboardAPI } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
@@ -23,13 +23,11 @@ function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-
       const [statsRes, pipelineRes, sourcesRes, leadsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/dashboard/stats', config),
-        axios.get('http://localhost:5000/api/dashboard/pipeline', config),
-        axios.get('http://localhost:5000/api/dashboard/sources', config),
-        axios.get('http://localhost:5000/api/dashboard/recent-leads?limit=5', config)
+        dashboardAPI.getStats(),
+        dashboardAPI.getPipeline(),
+        dashboardAPI.getSources(),
+        dashboardAPI.getRecentLeads(5)
       ]);
 
       setStats(statsRes.data);

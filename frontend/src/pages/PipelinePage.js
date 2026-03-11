@@ -1,6 +1,6 @@
 // Modern SaaS-Style Pipeline Kanban Board
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { leadAPI } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import StatusUpdateModal from '../components/StatusUpdateModal';
 
@@ -29,8 +29,7 @@ function PipelinePage() {
 
   const fetchLeads = async () => {
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const response = await axios.get('http://localhost:5000/api/leads', config);
+      const response = await leadAPI.getAllLeads();
       setLeads(response.data);
       setLoading(false);
     } catch (error) {

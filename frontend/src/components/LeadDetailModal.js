@@ -1,6 +1,6 @@
 // Lead detail modal with full information and actions
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { leadAPI } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 function LeadDetailModal({ lead, onClose }) {
@@ -18,8 +18,7 @@ function LeadDetailModal({ lead, onClose }) {
 
   const fetchLeadDetails = async () => {
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const response = await axios.get(`http://localhost:5000/api/leads/${lead._id}`, config);
+      const response = await leadAPI.getLeadById(lead._id);
       setLeadData(response.data.lead);
       setActivities(response.data.activities || []);
     } catch (error) {
@@ -32,11 +31,7 @@ function LeadDetailModal({ lead, onClose }) {
 
     setLoading(true);
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.put(`http://localhost:5000/api/leads/${lead._id}/status`,
-        { status: newStatus },
-        config
-      );
+      await leadAPI.updateLeadStatus(lead._id, newStatus);
       await fetchLeadDetails();
       alert('Status updated successfully!');
     } catch (error) {
@@ -51,11 +46,7 @@ function LeadDetailModal({ lead, onClose }) {
 
     setLoading(true);
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.post(`http://localhost:5000/api/leads/${lead._id}/notes`,
-        { note: newNote },
-        config
-      );
+      await leadAPI.addNote(lead._id, newNote);
       setNewNote('');
       await fetchLeadDetails();
       alert('Note added successfully!');

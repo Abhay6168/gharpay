@@ -18,12 +18,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Auth API calls
+export const authAPI = {
+  login: (credentials) => api.post('/auth/login', credentials),
+  register: (userData) => api.post('/auth/register', userData)
+};
+
 // Lead API calls
 export const leadAPI = {
   createLead: (leadData) => api.post('/leads', leadData),
-  getAllLeads: () => api.get('/leads'),
+  getAllLeads: (params) => api.get('/leads', { params }),
   getLeadById: (id) => api.get(`/leads/${id}`),
-  updateLeadStatus: (id, status) => api.patch(`/leads/${id}/status`, { status }),
+  updateLeadStatus: (id, status) => api.put(`/leads/${id}/status`, { status }),
+  addNote: (id, note) => api.post(`/leads/${id}/notes`, { note }),
   updateLead: (id, leadData) => api.patch(`/leads/${id}`, leadData),
   reassignLead: (id, newAgentId) => api.patch(`/leads/${id}/reassign`, { newAgentId }),
   getLeadActivities: (id) => api.get(`/leads/${id}/activities`)
@@ -35,8 +42,9 @@ export const agentAPI = {
   login: (credentials) => api.post('/agents/login', credentials),
   getAllAgents: () => api.get('/agents'),
   getAgent: (id) => api.get(`/agents/${id}`),
-  getCurrentUser: () => api.get('/agents/profile/me'),
-  updateAgent: (id, agentData) => api.patch(`/agents/${id}`, agentData)
+  createAgent: (agentData) => api.post('/agents', agentData),
+  updateAgent: (id, agentData) => api.put(`/agents/${id}`, agentData),
+  getCurrentUser: () => api.get('/agents/profile/me')
 };
 
 // Visit API calls
@@ -50,6 +58,10 @@ export const visitAPI = {
 
 // Dashboard API calls
 export const dashboardAPI = {
+  getStats: () => api.get('/dashboard/stats'),
+  getPipeline: () => api.get('/dashboard/pipeline'),
+  getSources: () => api.get('/dashboard/sources'),
+  getRecentLeads: (limit = 5) => api.get(`/dashboard/recent-leads?limit=${limit}`),
   getAnalytics: () => api.get('/dashboard/analytics'),
   getPerformance: () => api.get('/dashboard/performance'),
   getPipelineFunnel: () => api.get('/dashboard/funnel'),

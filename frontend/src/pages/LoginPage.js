@@ -1,7 +1,7 @@
 // Modern Premium SaaS-style Login Page
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { authAPI } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 function LoginPage() {
@@ -35,7 +35,7 @@ function LoginPage() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await authAPI.login(formData);
       const { token, ...userData } = response.data;
       login(userData, token);
       navigate('/dashboard');

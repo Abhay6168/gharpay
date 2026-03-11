@@ -1,7 +1,7 @@
 // Modern SaaS-Style Public Lead Capture Form
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { leadAPI } from '../services/api';
 
 function LeadFormPage() {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ function LeadFormPage() {
     setError('');
 
     try {
-      await axios.post('http://localhost:5000/api/leads', formData);
+      await leadAPI.createLead(formData);
       setSuccess(true);
       setFormData({
         name: '',

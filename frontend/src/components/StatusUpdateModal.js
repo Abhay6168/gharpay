@@ -1,6 +1,6 @@
 // Status update modal for pipeline board
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
+import { leadAPI } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 function StatusUpdateModal({ lead, onClose }) {
@@ -27,12 +27,7 @@ function StatusUpdateModal({ lead, onClose }) {
 
     setLoading(true);
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.put(
-        `http://localhost:5000/api/leads/${lead._id}/status`,
-        { status: newStatus },
-        config
-      );
+      await leadAPI.updateLeadStatus(lead._id, newStatus);
       alert('Status updated successfully!');
       onClose();
     } catch (error) {

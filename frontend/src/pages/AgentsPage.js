@@ -1,6 +1,6 @@
 // Agents Management Page (Admin Only)
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { agentAPI } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 function AgentsPage() {
@@ -26,8 +26,7 @@ function AgentsPage() {
 
     const fetchAgents = async () => {
         try {
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            const response = await axios.get('http://localhost:5000/api/agents', config);
+            const response = await agentAPI.getAllAgents();
             setAgents(response.data);
             setLoading(false);
         } catch (error) {
@@ -49,8 +48,7 @@ function AgentsPage() {
         setSuccess('');
 
         try {
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            await axios.post('http://localhost:5000/api/agents', formData, config);
+            await agentAPI.createAgent(formData);
             setSuccess('Agent created successfully!');
             setFormData({ name: '', email: '', password: '', phone: '' });
             setShowCreateModal(false);
@@ -64,9 +62,8 @@ function AgentsPage() {
 
     const handleToggleStatus = async (agentId, currentStatus) => {
         try {
-            const config = { headers: { Authorization: `Bearer ${token}` } };
             const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-            await axios.put(`http://localhost:5000/api/agents/${agentId}`, { status: newStatus }, config);
+            await agentAPI.updateAgent(agentId, { status: newStatus });
             fetchAgents();
         } catch (error) {
             console.error('Error updating agent status:', error);

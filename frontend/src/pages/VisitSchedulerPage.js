@@ -1,6 +1,6 @@
 // Visit scheduler page
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { leadAPI, visitAPI } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 function VisitSchedulerPage() {
@@ -27,8 +27,7 @@ function VisitSchedulerPage() {
 
   const fetchLeads = async () => {
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const response = await axios.get('http://localhost:5000/api/leads', config);
+      const response = await leadAPI.getAllLeads();
       // Filter leads that can have visits scheduled
       const eligibleLeads = response.data.filter(lead =>
         !['Booked', 'Lost'].includes(lead.status)
@@ -41,8 +40,7 @@ function VisitSchedulerPage() {
 
   const fetchVisits = async () => {
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const response = await axios.get('http://localhost:5000/api/visits', config);
+      const response = await visitAPI.getAllVisits();
       setVisits(response.data);
     } catch (error) {
       console.error('Error fetching visits:', error);
@@ -63,8 +61,7 @@ function VisitSchedulerPage() {
     setSuccess('');
 
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.post('http://localhost:5000/api/visits', formData, config);
+      await visitAPI.scheduleVisit(formData);
       setSuccess('Visit scheduled successfully!');
       setFormData({
         leadId: '',

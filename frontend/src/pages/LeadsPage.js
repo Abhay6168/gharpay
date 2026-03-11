@@ -1,6 +1,6 @@
 // Modern SaaS-Style Leads Management Page
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { leadAPI } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import LeadDetailModal from '../components/LeadDetailModal';
 
@@ -24,13 +24,12 @@ function LeadsPage() {
 
   const fetchLeads = async () => {
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const params = new URLSearchParams();
-      if (filters.status) params.append('status', filters.status);
-      if (filters.source) params.append('source', filters.source);
-      if (filters.search) params.append('search', filters.search);
+      const params = {};
+      if (filters.status) params.status = filters.status;
+      if (filters.source) params.source = filters.source;
+      if (filters.search) params.search = filters.search;
 
-      const response = await axios.get(`http://localhost:5000/api/leads?${params}`, config);
+      const response = await leadAPI.getAllLeads(params);
       setLeads(response.data);
       setLoading(false);
     } catch (error) {
